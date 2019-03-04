@@ -26,11 +26,12 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      count: 0,
+      idPlace: 2,
+      namePlace: "Galeria Cafe"
     }
     this.props.getPlaces();
     this.props.socket.instance.on('queue:2', (data => {
-      console.log(data);
+      console.log(this.props);
       this.props.getQueueSuccess(data)
     }));
   }
@@ -45,7 +46,7 @@ class App extends Component {
         <StatusBar backgroundColor="rgba(0,0,0,0)" barStyle="light-content" />
         <LinearGradient locations={[0, 0.08, 0.11, 0.16, 0.27]} colors={['#B01D1D', '#C55A5A', '#CC6F6F', '#DB9898', '#fff']} style={styles.linearGradient}>
           <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "center", paddingTop: 10 }}>
-            <Text style={styles.title}>Galeria Cafe </Text>
+            <Text style={styles.title}>{this.state.namePlace} </Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Image
@@ -120,7 +121,13 @@ class App extends Component {
                       <View style={{ width: 120, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity
                           style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
-                          onPress={() => { console.log(("hola")) }}
+                          onPress={() => {
+                            this.props.socket.instance.removeListener(`queue:2`, (data => {
+                              console.log(data);
+                              this.props.socket.instance.on(`queue:${item.id}`, this.props.getQueueSuccess(data))
+                            }))
+                            this.setState({ idPlace: item.id, namePlace: item.name });
+                          }}
                         >
                           <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>
                         </TouchableOpacity>
