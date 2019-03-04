@@ -1,8 +1,8 @@
 import { fork, all } from 'redux-saga/effects';
-/* import voteSaga from '../services/vote/saga'; */
+import GetPlaceSaga from '../services/place/saga';
 
-export default function* rootSaga () {
+export default function* rootSaga() {
     yield all([
-/*         fork(voteSaga) */
+        fork(GetPlaceSaga),
     ]);
 }

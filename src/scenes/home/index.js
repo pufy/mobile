@@ -1,74 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, Dimensions, Image, Animated, StatusBar, FlatList, TextInput, StyleSheet } from 'react-native'
-
+import { Text, View, Dimensions, Image, Animated, StatusBar, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { getPlaces } from '../../services/place/action';
 import SlidingUpPanel from 'rn-sliding-up-panel'
 import LinearGradient from 'react-native-linear-gradient';
+import { connect } from 'react-redux';
 const { height, width } = Dimensions.get('window')
+import styles from './styles';
 
-var stylesTwo = StyleSheet.create({
-  linearGradient: {
-    flex: 1,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: 'Gill Sans',
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
-    backgroundColor: 'transparent',
-  },
-});
-const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    marginBottom: 60
-  },
-  title: {
-    fontSize: 18,
-    textAlign: 'center',
-    margin: 10,
-    color: 'white'
-  },
-  containerDrop: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  panel: {
-    flex: 1,
-    backgroundColor: 'white',
-    position: 'relative'
-  },
-  panelHeader: {
-    height: 50,
-    backgroundColor: '#FAFAFA',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    /* shadowOffset: { width: 0, height: 0 }, */
-
-  },
-  favoriteIcon: {
-    position: 'absolute',
-    top: -24,
-    right: 24,
-    backgroundColor: '#2b8a3e',
-    width: 48,
-    height: 48,
-    padding: 8,
-    borderRadius: 24,
-    zIndex: 1
-  }
-}
-type Props = {};
-export default class App extends Component<Props> {
+class App extends Component {
 
   static navigationOptions = {
     header: null,
@@ -76,26 +15,27 @@ export default class App extends Component<Props> {
 
   static defaultProps = {
     draggableRange: {
-      top: height - 90,
+      top: height - 50,
       bottom: 52,
       start: 0,
       end: 0,
     }
   }
 
-  _panel;
   constructor(props) {
     super(props)
     this.state = {
       count: 0,
     }
+    this.props.getPlaces();
   }
 
   render() {
+    const { places } = this.props;
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="rgba(0,0,0,0)" barStyle="light-content" />
-        <LinearGradient locations={[0, 0.08, 0.11,0.16, 0.27]} colors={['#B01D1D', '#C55A5A','#CC6F6F', '#DB9898','#fff']} style={stylesTwo.linearGradient}>
+        <LinearGradient locations={[0, 0.08, 0.11, 0.16, 0.27]} colors={['#B01D1D', '#C55A5A', '#CC6F6F', '#DB9898', '#fff']} style={styles.linearGradient}>
           <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "center", paddingTop: 10 }}>
             <Text style={styles.title}>Galeria Cafe </Text>
           </View>
@@ -104,8 +44,8 @@ export default class App extends Component<Props> {
               style={{ width: 100, height: 100, marginTop: 20 }}
               source={{ uri: 'https://images.genius.com/ea84df2da94830ad52a115b1c0cee660.953x953x1.jpg' }}
             />
-            <Text style={{ fontSize: 20, fontWeight: '600' ,color: '#333333', marginBottom:5, marginTop: 8}}>Aquelarre </Text>
-            <Text style={{ color: '#666', fontWeight: '100', marginBottom:8, fontSize: 16 }}>Mago de oz </Text>
+            <Text style={{ fontSize: 20, fontWeight: '600', color: '#333333', marginBottom: 5, marginTop: 8 }}>Aquelarre </Text>
+            <Text style={{ color: '#666', fontWeight: '100', marginBottom: 8, fontSize: 16 }}>Mago de oz </Text>
           </View>
           <FlatList
             data={[
@@ -126,20 +66,16 @@ export default class App extends Component<Props> {
               </View>
             }
           />
-          <Text style={stylesTwo.buttonText}>
-            Sign in with Facebook
-        </Text>
+          <View style={{ alignItems: 'center' }}>
+            <TextInput
+              onPress={() => this.setState({ visible: true })}
+              style={{ height: 30, borderWidth: 1, color: "#666", borderColor: 'rgba(51,51,51,.24)', marginTop: 15, marginBottom: 15, borderRadius: 100, width: 300, textAlign: 'center' }}
+              placeholderTextColor={'#666'}
+              placeholder="Busca tu canción o artista"
+              onChangeText={(text) => this.setState({ text })}
+            />
+          </View>
         </LinearGradient>
-        <View style={{ alignItems: 'center' }}>
-
-          <TextInput
-            onPress={() => this.setState({ visible: true })}
-            style={{ height: 30, borderWidth: 1, color: "#666", borderColor: 'rgba(51,51,51,.24)', marginTop: 15, marginBottom: 15, borderRadius: 100, width: 300, textAlign: 'center' }}
-            placeholderTextColor={'#666'}
-            placeholder="Busca tu canción o artista"
-            onChangeText={(text) => this.setState({ text })}
-          />
-        </View>
         <SlidingUpPanel
           visible
           startCollapsed
@@ -166,7 +102,29 @@ export default class App extends Component<Props> {
               <Text style={{ color: '#333', fontWeight: 'bold' }}>Sitios cercanos</Text>
             </View>
             <View style={styles.containerDrop}>
-              <Text>Bottom Sheet Content</Text>
+              {places != undefined && places.places != undefined &&
+                <FlatList
+                  data={places.places}
+                  renderItem={({ item }) =>
+                    <View style={{ backgroundColor: '#fff', flexDirection: 'row', marginBottom: 10, paddingTop: 10, paddingBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 1 } }}>
+                      <Image style={{ width: 50, height: 50, borderRadius: 25, marginLeft: 10, marginRight: 10, width: 50 }} source={{ uri: "https://www.zonavip.co/logos-aliados/the-rock-center.jpg" }} />
+                      <View style={{ paddingLeft: 0, flex: 1 }}>
+                        <Text style={{ fontSize: 14, color: '#333' }}>{item.name}</Text>
+                        <Text style={{ fontSize: 12, fontWeight: '100', color: '#666' }}>{item.type_name} - 1,6km</Text>
+                        <Text style={{ color: '#18B127', fontWeight: '100', fontSize: 12 }}>Abierto</Text>
+                      </View>
+                      <View style={{ width: 120, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity
+                          style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
+                          onPress={() => { console.log(("hola")) }}
+                        >
+                          <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  }
+                />
+              }
             </View>
           </View>
         </SlidingUpPanel>
@@ -174,4 +132,16 @@ export default class App extends Component<Props> {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    places: state.places
+  }
+};
 
+const mapDispatchToProps = {
+  getPlaces: getPlaces
+};
+
+App = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default App;
