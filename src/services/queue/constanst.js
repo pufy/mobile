@@ -1,0 +1,1 @@
+export const GET_QUEUE_SUCCESS = "GET_QUEUE_SUCCESS";

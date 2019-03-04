@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 const { height, width } = Dimensions.get('window')
 import styles from './styles';
+import { getQueueSuccess } from "../../services/queue/action";
 
 class App extends Component {
 
@@ -28,10 +29,17 @@ class App extends Component {
       count: 0,
     }
     this.props.getPlaces();
+    this.props.socket.instance.on('queue:2', (data => {
+      console.log(data);
+      this.props.getQueueSuccess(data)
+    }));
   }
 
   render() {
     const { places } = this.props;
+    console.log(places);
+    const { queue } = this.props;
+    console.log(queue);
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="rgba(0,0,0,0)" barStyle="light-content" />
@@ -47,25 +55,21 @@ class App extends Component {
             <Text style={{ fontSize: 20, fontWeight: '600', color: '#333333', marginBottom: 5, marginTop: 8 }}>Aquelarre </Text>
             <Text style={{ color: '#666', fontWeight: '100', marginBottom: 8, fontSize: 16 }}>Mago de oz </Text>
           </View>
-          <FlatList
-            data={[
-              { key: '1', artist: 'Jarabe Palo de agua', song: 'El lado oscuro', image: 'https://i.ytimg.com/vi/6EEz7cEaX-k/0.jpg' },
-              { key: '2', artist: 'Mago de oz', song: 'Hasta que el cuerpo aguante', image: 'https://images.genius.com/ea84df2da94830ad52a115b1c0cee660.953x953x1.jpg' },
-              { key: '3', artist: 'Zoe', song: 'Luna', image: 'https://images.genius.com/5ee3a6ac787f4d6c6add4413f0836ed1.630x630x1.jpg' },
-              { key: '4', artist: 'Kraken', song: 'Vestido de cristal', image: 'https://i.ytimg.com/vi/yo9WrDot5oQ/0.jpg' },
-              { key: '5', artist: 'Bunbury', song: 'Aunque no sea conmigo', image: 'https://i.scdn.co/image/65cf8afe683a6f44eb1acb25a6dab990a22aa8d3' },
-
-            ]}
-            renderItem={({ item }) =>
-              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 20, marginBottom: 5, marginTop: 5 }}>
-                <Image style={{ width: 50, height: 50 }} source={{ uri: item.image }} />
-                <View style={{ flex: 1, flexDirection: 'column', marginLeft: 10 }}>
-                  <Text style={{ fontSize: 16, color: '#333', fontWeight: 'normal' }}>{item.song}</Text>
-                  <Text style={{ fontSize: 12, color: '#666' }}>{item.artist}</Text>
+          {queue &&
+            <FlatList
+              data={queue}
+              renderItem={({ item }) =>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', marginLeft: 20, marginBottom: 5, marginTop: 5 }}>
+                  <Image style={{ width: 50, height: 50 }} source={{ uri: item.image[0] }} />
+                  <View style={{ flex: 1, flexDirection: 'column', marginLeft: 10 }}>
+                    <Text style={{ fontSize: 16, color: '#333', fontWeight: 'normal' }}>{item.name}</Text>
+                    <Text style={{ fontSize: 12, color: '#666' }}>{item.artist[0]}</Text>
+                  </View>
                 </View>
-              </View>
-            }
-          />
+              }
+            />
+          }
+
           <View style={{ alignItems: 'center' }}>
             <TextInput
               onPress={() => this.setState({ visible: true })}
@@ -134,12 +138,15 @@ class App extends Component {
 }
 const mapStateToProps = (state) => {
   return {
-    places: state.places
+    places: state.places,
+    socket: state.socket,
+    queue: state.queue.queue
   }
 };
 
 const mapDispatchToProps = {
-  getPlaces: getPlaces
+  getPlaces: getPlaces,
+  getQueueSuccess
 };
 
 App = connect(mapStateToProps, mapDispatchToProps)(App);
