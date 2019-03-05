@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Text, View, Dimensions, Image, Animated, StatusBar, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
-import { getPlaces } from '../../services/place/action';
+import { getPlaces ,getPlacesRecommended } from '../../services/place/action';
 import SlidingUpPanel from 'rn-sliding-up-panel'
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 const { height, width } = Dimensions.get('window')
 import styles from './styles';
 import { getQueueSuccess } from "../../services/queue/action";
+
 
 class App extends Component {
 
@@ -27,9 +28,10 @@ class App extends Component {
     super(props)
     this.state = {
       idPlace: 2,
-      namePlace: "Galeria Cafe"
+      namePlace: "Galeria Cafe "
     }
     this.props.getPlaces();
+    this.props.getPlacesRecommended();
     this.props.socket.instance.on('queue:2', (data => {
       console.log(this.props);
       this.props.getQueueSuccess(data)
@@ -103,8 +105,25 @@ class App extends Component {
         >
           <View style={styles.panel}>
             <View style={styles.panelHeader}>
-              <View style={{ backgroundColor: "#C4C4C4", width: 28, height: 5, borderRadius: 100, marginBottom: 5 }}></View>
-              <Text style={{ color: '#333', fontWeight: 'bold' }}>Sitios cercanos</Text>
+              <View style={{ backgroundColor: "#C4C4C4", width: 28, height: 5, borderRadius: 100, marginTop: 10 }}></View>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}
+                  onPress={() => {
+                    console.log("Hey!!")
+                  }}
+                >
+                  <Text style={{ color: '#333', fontWeight: 'bold' }}>Sitios cercanos</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}
+                  onPress={() => {
+                    console.log("Hey!!")
+                  }}
+                >
+                  <Text style={{ color: '#333', fontWeight: 'bold' }}>Recomendado</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.containerDrop}>
               {places != undefined && places.places != undefined &&
@@ -147,13 +166,15 @@ const mapStateToProps = (state) => {
   return {
     places: state.places,
     socket: state.socket,
-    queue: state.queue.queue
+    queue: state.queue.queue,
+    placesRecommended: state.placesRecommended
   }
 };
 
 const mapDispatchToProps = {
   getPlaces: getPlaces,
-  getQueueSuccess
+  getQueueSuccess,
+  getPlacesRecommended
 };
 
 App = connect(mapStateToProps, mapDispatchToProps)(App);
