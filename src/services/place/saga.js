@@ -32,10 +32,30 @@ function* fetchPlacesRecommended() {
   else
     yield put({ type: actions.GET_PLACES_RECOMMENDED_FAILED, error: data })
 }
+function* fetchCheckinPlace(placeId) {
+  console.log(placeId);
+  var myHeaders = new Headers();
+  var miInit = {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJuYW1lcyI6IkNyaXN0aWFtIiwibGFzdG5hbWVzIjoiRGlheiIsImVtYWlsIjoiY2RpYXpxdHhAZ21haWwuY29tIiwiaWF0IjoxNTUxNjc4NTM4fQ.DvS-RJTc5i4QOtxBWYpAgQ8xKTY6zowwtn6zJ7WNoB4`
+    },
+    mode: 'cors',
+    cache: 'default'
+  };
+  const data = yield fetch(`https://pufy.ga/v1/place/${placeId}/checkin`, miInit)
+    .then(response => response.json())
+    .catch(error => { return { state: 'ERROR', data: error } });
+  if (!data.error)
+    yield put({ type: actions.CHECKIN_PLACES_SUCCESS, data: data });
+  else
+    yield put({ type: actions.CHECKIN_PLACESD_FAILED, error: data })
+}
 
 function* ActionWatcher() {
   yield takeLatest(actions.GET_PLACES, fetchPlaces)
   yield takeLatest(actions.GET_PLACES_RECOMMENDED, fetchPlacesRecommended)
+  yield takeLatest(actions.CHECKIN_PLACES, fetchCheckinPlace)
 }
 
 

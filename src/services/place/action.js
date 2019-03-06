@@ -27,3 +27,17 @@ export const getPlacesRecommendedError = (error) => ({
   type: actions.GET_PLACES_RECOMMENDED_FAILED,
   error: error
 });
+export const checkinPlace = (placeId) => ({
+  type: actions.CHECKIN_PLACES,
+  placeId: placeId
+});
+
+export const checkinPlaceSuccess = (data) => ({
+  type: actions.CHECKIN_PLACES_SUCCESS,
+  data : data
+});
+
+export const checkinPlaceError = (error) => ({
+  type: actions.CHECKIN_PLACES_FAILED,
+  error: error
+});
