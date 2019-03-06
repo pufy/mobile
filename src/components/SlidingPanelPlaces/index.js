@@ -17,15 +17,16 @@ class SlidingPanelPlaces extends Component {
       end: 0,
     }
   }
+  _draggedValue = new Animated.Value(300)
 
   async componentWillMount() {
     this.props.getPlaces();
     this.props.getPlacesRecommended();
   }
-  _draggedValue = new Animated.Value(300)
 
   render() {
     const { places } = this.props;
+    
     return (
       <SlidingUpPanel
         visible
@@ -70,12 +71,12 @@ class SlidingPanelPlaces extends Component {
             </View>
           </View>
           <View style={styles.containerDrop}>
-            {places != undefined && places.places != undefined &&
+            {places && places.places &&
               <FlatList
                 data={places.places}
                 renderItem={({ item }) =>
                   <View key={`key-${item.id}`} style={{ backgroundColor: '#fff', flexDirection: 'row', marginBottom: 10, paddingTop: 10, paddingBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 1 } }}>
-                    <Image style={{ width: 50, height: 50, borderRadius: 25, marginLeft: 10, marginRight: 10, width: 50 }} source={{ uri: "https://www.zonavip.co/logos-aliados/the-rock-center.jpg" }} />
+                    <Image style={{ width: 50, height: 50, borderRadius: 25, marginLeft: 10, marginRight: 10, width: 50 }} source={{ uri: item.photo }} />
                     <View style={{ paddingLeft: 0, flex: 1 }}>
                       <Text style={{ fontSize: 14, color: '#333' }}>{item.name}</Text>
                       <Text style={{ fontSize: 12, fontWeight: '100', color: '#666' }}>{item.type_name} - 1,6km</Text>
@@ -86,11 +87,7 @@ class SlidingPanelPlaces extends Component {
                         style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
                         onPress={() => {
                           this._panel.transitionTo(0);
-                          setTimeout(function () {
-                            navigateToPlayer({
-                              itemId: item.id
-                            });
-                          }, 250);
+                          setTimeout(() => navigateToPlayer({ place: item }), 250);
                         }}
                       >
                         <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>

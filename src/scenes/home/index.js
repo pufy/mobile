@@ -22,6 +22,7 @@ class App extends Component {
             <Text style={styles.title}>Pufy</Text>
           </View>
         </ImageBackground>
+        <SlidingPanelPlaces  />
       </View >
     );
   }

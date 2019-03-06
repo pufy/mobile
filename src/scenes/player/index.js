@@ -4,44 +4,41 @@ import styles from './styles';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { getQueueSuccess } from "../../services/queue/action";
-import { connectClientId } from "../../services/socket/action";
+import { connectClientId, connectClientIdSuccess } from "../../services/socket/action";
 class Player extends Component {
 
+  state = { place: undefined }
 
-  state = {
-    idPlace: 2,
-    namePlace: "Galeria Cafe "
+  componentWillMount() {
+    const place = this.props.navigation.getParam('place');
+    this.setState({ place: place });
+    this.props.connectClientId(place.id);
   }
-  async componentWillMount() {
-    this.props.connectClientId(2);
-  }
+
   componentDidUpdate(prevProps) {
-    if (this.props.socket !== prevProps.socket) {
-      this.props.socket.socket.on(`queue:${this.props.navigation.getParam('itemId', 'NO-ID')}`, (data => {
-        console.log(data, "cambio");
-        this.props.getQueueSuccess(data)
-      }))
-      console.log(this.props.socket);
+    const { socket } = this.props;
+    const { place, socketNow } = this.state;
+    if (socket.socket && !socketNow){
+      this.setState({ socketNow: socket.socket.on(`queue:${place.id}`, (data => this.props.getQueueSuccess(data))) });
     }
-    if (this.props.navigation.getParam('itemId', 'NO-ID') != prevProps.navigation.getParam('itemId', 'NO-ID')) {
-      this.props.connectClientId(this.props.navigation.getParam('itemId'));
-      console.log(this.props.navigation.getParam('itemId'))
-    }
+  }
+
+  componentWillUnmount(){
+    this.props.getQueueSuccess(undefined)
+    this.state.socketNow.destroy();
+    this.setState({ socketNow: undefined });
   }
 
   render() {
     const { queue } = this.props;
-    const song = [];
-    const songs = (queue !=undefined)? song.push(queue): queue; 
-    const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 'NO-ID');
-     console.log(songs); 
+    const { place } = this.state;
+
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#B01D1D" barStyle="light-content" />
         <LinearGradient locations={[0, 0.08, 0.11, 0.16, 0.27]} colors={['#B01D1D', '#C55A5A', '#CC6F6F', '#DB9898', '#fff']} style={styles.linearGradient}>
           <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "center", paddingTop: 10 }}>
-            <Text style={styles.title}>{this.state.namePlace}</Text>
+            <Text style={styles.title}>{ place.name}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Image
@@ -88,7 +85,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   getQueueSuccess,
-  connectClientId
+  connectClientId,
+  connectClientIdSuccess
 };
 
 Player = connect(mapStateToProps, mapDispatchToProps)(Player);
