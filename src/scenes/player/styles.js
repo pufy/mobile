@@ -14,7 +14,6 @@ export default styles = StyleSheet.create({
   title: {
     fontSize: 18,
     textAlign: 'center',
-    marginTop: 20,
     color: 'white',
     fontWeight: '700'
   },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, FlatList, TextInput, StatusBar } from 'react-native';
+import { View, Text, Image, FlatList, TextInput, StatusBar, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
@@ -32,16 +32,26 @@ class Player extends Component {
   render() {
     const { queue } = this.props;
     const song = [];
-    const songs = (queue !=undefined)? song.push(queue): queue; 
+    const songs = (queue != undefined) ? song.push(queue) : queue;
     const { navigation } = this.props;
     const itemId = navigation.getParam('itemId', 'NO-ID');
-     console.log(songs); 
+    console.log(songs);
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#B01D1D" barStyle="light-content" />
         <LinearGradient locations={[0, 0.08, 0.11, 0.16, 0.27]} colors={['#B01D1D', '#C55A5A', '#CC6F6F', '#DB9898', '#fff']} style={styles.linearGradient}>
-          <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "center", paddingTop: 10 }}>
+          <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "space-between", alignItems: 'center', marginTop: 20, paddingTop: 10 }}>
+            <TouchableOpacity
+              style={{ color: '#fff' }}
+              onPress={() => {
+                this.props.navigation.goBack()
+                console.log("<atras");
+              }}
+            >
+              <Text style={{ color: '#fff', fontSize: 14 }}>atras</Text>
+            </TouchableOpacity>
             <Text style={styles.title}>{this.state.namePlace}</Text>
+            <Text style={styles.title}>...</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Image
