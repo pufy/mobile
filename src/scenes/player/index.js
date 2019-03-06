@@ -17,13 +17,13 @@ class Player extends Component {
 
   componentDidUpdate(prevProps) {
     const { socket } = this.props;
-    const { place, socketNow } = this.state;
-    if (socket.socket && !socketNow){
+    const { place, socketNow } = this.state;
+    if (socket.socket && !socketNow) {
       this.setState({ socketNow: socket.socket.on(`queue:${place.id}`, (data => this.props.getQueueSuccess(data))) });
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.getQueueSuccess(undefined)
     this.state.socketNow.destroy();
     this.setState({ socketNow: undefined });
@@ -47,7 +47,7 @@ class Player extends Component {
             >
               <Text style={{ color: '#fff', fontSize: 14 }}>atras</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>{ place.name}</Text>
+            <Text style={styles.title}>{place.name}</Text>
             <Text style={styles.title}>...</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -58,7 +58,7 @@ class Player extends Component {
             <Text style={{ fontSize: 20, fontWeight: '600', color: '#333333', marginBottom: 5, marginTop: 8 }}>Aquelarre </Text>
             <Text style={{ color: '#666', fontWeight: '100', marginBottom: 8, fontSize: 16 }}>Mago de oz </Text>
           </View>
-          {queue &&
+          {(queue && queue.length != 0) ?
             <FlatList
               data={queue}
               renderItem={({ item }) =>
@@ -70,7 +70,11 @@ class Player extends Component {
                   </View>
                 </View>
               }
-            />
+            /> :
+            <View style={{ flex:1, alignItems: 'center',justifyContent:'center' }}>
+              <Image style={{ width: 150, height: 150 }} source={{ uri: 'https://cdn2.iconfinder.com/data/icons/music-instrument-round-flat/96/Music_instrument_Drum_-512.png' }} />
+              <Text style={{color:'#666', fontSize:15, fontWeight:'100', marginTop:10}}>Aun no hay musica</Text>
+            </View>
           }
           <View style={{ alignItems: 'center' }}>
             <TextInput
