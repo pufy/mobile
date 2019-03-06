@@ -9,6 +9,8 @@ import { navigateToPlayer } from '../../navigation/NavigationHelpers';
 const { height, width } = Dimensions.get('window')
 class SlidingPanelPlaces extends Component {
 
+  state = { view: 'near'  };
+
   static defaultProps = {
     draggableRange: {
       top: height - 50,
@@ -26,6 +28,7 @@ class SlidingPanelPlaces extends Component {
 
   render() {
     const { places } = this.props;
+    const { view } = this.state;
     
     return (
       <SlidingUpPanel
@@ -54,24 +57,18 @@ class SlidingPanelPlaces extends Component {
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity
                 style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}
-                onPress={() => {
-                  console.log("Hey!!")
-                }}
-              >
+                onPress={() => this.setState({ view: 'near' })}>
                 <Text style={{ color: '#333', fontWeight: 'bold' }}>Sitios cercanos</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{ justifyContent: 'center', alignItems: 'center', padding: 5 }}
-                onPress={() => {
-                  console.log("Hey!!")
-                }}
-              >
+                onPress={() => this.setState({ view: 'recommended' }) }>
                 <Text style={{ color: '#333', fontWeight: 'bold' }}>Recomendado</Text>
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.containerDrop}>
-            {places && places.places &&
+            {view === 'near' && places && places.places &&
               <FlatList
                 data={places.places}
                 renderItem={({ item }) =>
@@ -90,7 +87,33 @@ class SlidingPanelPlaces extends Component {
                           setTimeout(() => navigateToPlayer({ place: item }), 250);
                         }}
                       >
-                        <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>
+                        <Text style={{ color: '#555', fontSize: 12 }}>Ver</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                }
+              />
+            }
+            {view === 'recommended' && places && places.placesRecommended &&
+              <FlatList
+                data={places.placesRecommended}
+                renderItem={({ item }) =>
+                  <View key={`key-${item.id}`} style={{ backgroundColor: '#fff', flexDirection: 'row', marginBottom: 10, paddingTop: 10, paddingBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 1 } }}>
+                    <Image style={{ width: 50, height: 50, borderRadius: 25, marginLeft: 10, marginRight: 10, width: 50 }} source={{ uri: item.photo }} />
+                    <View style={{ paddingLeft: 0, flex: 1 }}>
+                      <Text style={{ fontSize: 14, color: '#333' }}>{item.name}</Text>
+                      <Text style={{ fontSize: 12, fontWeight: '100', color: '#666' }}>{item.type_name} - 1,6km</Text>
+                      <Text style={{ color: '#18B127', fontWeight: '100', fontSize: 12 }}>Abierto</Text>
+                    </View>
+                    <View style={{ width: 120, justifyContent: 'center', alignItems: 'center' }}>
+                      <TouchableOpacity
+                        style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
+                        onPress={() => {
+                          this._panel.transitionTo(0);
+                          setTimeout(() => navigateToPlayer({ place: item }), 250);
+                        }}
+                      >
+                        <Text style={{ color: '#555', fontSize: 12 }}>Ver</Text>
                       </TouchableOpacity>
                     </View>
                   </View>

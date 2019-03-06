@@ -8,12 +8,14 @@ const reducerPlace = (state = {}, action) => {
       return { ...state, loading: false, places: action.places };
     case actions.GET_PLACES_FAILED:
       return { ...state, getPlaces: false, error: action.error };
+
     case actions.GET_PLACES_RECOMMENDED:
       return { ...state, loading: true };
     case actions.GET_PLACES_RECOMMENDED_SUCCESS:
       return { ...state, loading: false, placesRecommended: action.placesRecommended };
     case actions.GET_PLACES_RECOMMENDED_FAILED:
       return { ...state, getPlaces: false, error: action.error };
+      
     case actions.CHECKIN_PLACES:
       return { ...state, loading: true };
     case actions.CHECKIN_PLACES_SUCCESS:

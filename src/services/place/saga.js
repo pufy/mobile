@@ -4,16 +4,14 @@ import * as actions from "./constants";
 /* import { navigateToPlayer } from '../../navigation/NavigationHelpers'; */
 
 function* fetchPlaces() {
-  const data = yield fetch(`https://pufy.ga/v1/place?lat=1.624439&long=-75.604601&range=2000`)
+  const data = yield fetch(`https://pufy.ga/v1/place?lat=1.624439&long=-75.604601&range=1000`)
     .then(response => response.json())
     .catch(error => { return { state: 'ERROR', data: error } });
-  if (data) {
-    /* yield call(navigateToPlayer); */
-    yield put({ type: actions.GET_PLACES_SUCCESS, places: data });
-  }
-  else
-    yield put({ type: actions.GET_PLACES_FAILED, error: data })
+
+  if (data) yield put({ type: actions.GET_PLACES_SUCCESS, places: data })
+  else yield put({ type: actions.GET_PLACES_FAILED, error: data })
 }
+
 function* fetchPlacesRecommended() {
   var myHeaders = new Headers();
   var miInit = {
@@ -27,11 +25,13 @@ function* fetchPlacesRecommended() {
   const data = yield fetch(`https://pufy.ga/v1/place/recommended?lat=1.624439&long=-75.60460`, miInit)
     .then(response => response.json())
     .catch(error => { return { state: 'ERROR', data: error } });
+    
   if (!data.error)
-    yield put({ type: actions.GET_PLACES_RECOMMENDED_SUCCESS, places: data });
+    yield put({ type: actions.GET_PLACES_RECOMMENDED_SUCCESS, placesRecommended: data });
   else
     yield put({ type: actions.GET_PLACES_RECOMMENDED_FAILED, error: data })
 }
+
 function* fetchCheckinPlace(placeId) {
   console.log(placeId);
   var myHeaders = new Headers();
