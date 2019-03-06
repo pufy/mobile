@@ -3,15 +3,13 @@ import SocketIOClient from "socket.io-client";
 
 import * as actions from "./constants";
 
-function* fetchConnect(placeId) {
-  let initState = {
-    instance: SocketIOClient('https://pufy.ga/queue', {
-      query: `place=${placeId.placeId}`,
+function* fetchConnect(data) {
+  let instance = SocketIOClient('https://pufy.ga/queue', {
+      query: `place=${data.placeId}`,
       'forceNew': true
-    })
-  }
+  });
 
-  yield put({ type: actions.CONNECT_CLIENT_ID_SUCCESS, socket: initState.instance });
+  yield put({ type: actions.CONNECT_CLIENT_ID_SUCCESS, socket: instance });
 }
 
 function* ActionWatcher() {
