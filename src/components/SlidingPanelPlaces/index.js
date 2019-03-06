@@ -4,6 +4,7 @@ import styles from './styles';
 import { connect } from 'react-redux';
 import SlidingUpPanel from 'rn-sliding-up-panel'
 import { getPlaces, getPlacesRecommended } from '../../services/place/action';
+import { navigateToPlayer } from '../../navigation/NavigationHelpers';
 
 const { height, width } = Dimensions.get('window')
 class SlidingPanelPlaces extends Component {
@@ -82,11 +83,7 @@ class SlidingPanelPlaces extends Component {
                       <TouchableOpacity
                         style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
                         onPress={() => {
-                          this.props.socket.instance.removeListener(`queue:2`, (data => {
-                            console.log(data);
-                            this.props.socket.instance.on(`queue:${item.id}`, this.props.getQueueSuccess(data))
-                          }))
-                          this.setState({ idPlace: item.id, namePlace: item.name });
+                          navigateToPlayer();
                         }}
                       >
                         <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, Dimensions, Image, Animated, StatusBar, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import { connect } from 'react-redux';
 import styles from './styles';
-import Player from '../player';
 import SlidingPanelPlaces from '../../components/SlidingPanelPlaces'
-
+import { navigateToPlayer } from '../../navigation/NavigationHelpers';
 class App extends Component {
 
   static navigationOptions = {
@@ -19,8 +18,17 @@ class App extends Component {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="rgba(0,0,0,0)" barStyle="light-content" />
-        <Player {...this.props} />
-        <SlidingPanelPlaces {...this.props}/>
+        <TouchableOpacity
+          style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
+          onPress={() => {
+            this.props.navigation.navigate('player')
+            this.props.navigation.navigate('Home')
+            this.props.navigation.push('Details')
+          }}
+        >
+          <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>
+        </TouchableOpacity>
+        <SlidingPanelPlaces {...this.props} />
       </View>
     );
   }
