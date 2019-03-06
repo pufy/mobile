@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Dimensions, FlatList, TextInput, TouchableOpacity, Animated } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
 import SlidingUpPanel from 'rn-sliding-up-panel'
@@ -18,11 +18,11 @@ class SlidingPanelPlaces extends Component {
     }
   }
 
-  constructor(props) {
-    super(props)
+  async componentWillMount() {
     this.props.getPlaces();
     this.props.getPlacesRecommended();
   }
+  _draggedValue = new Animated.Value(300)
 
   render() {
     const { places } = this.props;
@@ -33,11 +33,13 @@ class SlidingPanelPlaces extends Component {
         transitionTo
         minimumDistanceThreshold={40}
         allowMomentum={false}
+        animatedValue={this._draggedValue}
         onDragStart={c => {
           this.props.draggableRange.start = c;
         }}
         onDragEnd={c => {
           positio = (this.props.draggableRange.start + height / 8 < c) ? height : (this.props.draggableRange.start > c + height / 8) ? 0 : height;
+          this.setState.panel = this._panel;
           this._panel.transitionTo(positio)
         }}
         showBackdrop={false}
@@ -72,7 +74,7 @@ class SlidingPanelPlaces extends Component {
               <FlatList
                 data={places.places}
                 renderItem={({ item }) =>
-                  <View style={{ backgroundColor: '#fff', flexDirection: 'row', marginBottom: 10, paddingTop: 10, paddingBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 1 } }}>
+                  <View key={`key-${item.id}`} style={{ backgroundColor: '#fff', flexDirection: 'row', marginBottom: 10, paddingTop: 10, paddingBottom: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 1 } }}>
                     <Image style={{ width: 50, height: 50, borderRadius: 25, marginLeft: 10, marginRight: 10, width: 50 }} source={{ uri: "https://www.zonavip.co/logos-aliados/the-rock-center.jpg" }} />
                     <View style={{ paddingLeft: 0, flex: 1 }}>
                       <Text style={{ fontSize: 14, color: '#333' }}>{item.name}</Text>
@@ -83,7 +85,12 @@ class SlidingPanelPlaces extends Component {
                       <TouchableOpacity
                         style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
                         onPress={() => {
-                          navigateToPlayer();
+                          this._panel.transitionTo(0);
+                          setTimeout(function () {
+                            navigateToPlayer({
+                              itemId: item.id
+                            });
+                          }, 250);
                         }}
                       >
                         <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>

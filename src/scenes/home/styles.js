@@ -23,7 +23,8 @@ export default styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     margin: 10,
-    color: 'white'
+    fontWeight: '900',
+    color: '#B01D1D'
   },
   containerDrop: {
     flex: 1,

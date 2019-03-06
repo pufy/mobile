@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, Dimensions, Image, Animated, StatusBar, TextInput, TouchableOpacity, FlatList } from 'react-native'
+import { Text, View, Dimensions, Image, Animated, StatusBar, TextInput, TouchableOpacity, FlatList, ImageBackground } from 'react-native'
 import { connect } from 'react-redux';
 import styles from './styles';
 import SlidingPanelPlaces from '../../components/SlidingPanelPlaces'
-import { navigateToPlayer } from '../../navigation/NavigationHelpers';
 class App extends Component {
 
   static navigationOptions = {
@@ -17,19 +16,13 @@ class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="rgba(0,0,0,0)" barStyle="light-content" />
-        <TouchableOpacity
-          style={{ borderWidth: 1, borderColor: '#666', borderRadius: 25, justifyContent: 'center', alignItems: 'center', padding: 5 }}
-          onPress={() => {
-            this.props.navigation.navigate('player')
-            this.props.navigation.navigate('Home')
-            this.props.navigation.push('Details')
-          }}
-        >
-          <Text style={{ color: '#555', fontSize: 12 }}>Reproducciendo</Text>
-        </TouchableOpacity>
-        <SlidingPanelPlaces {...this.props} />
-      </View>
+        <StatusBar backgroundColor="#B01D1D" barStyle="dark-content" />
+        <ImageBackground source={{ uri: 'https://res.cloudinary.com/cacaotics/image/upload/v1551866533/Bitmap.png' }} style={{ width: '100%', height: '100%' }}>
+          <View style={{ backgroundColor: 'rgba(0,0,0,0)', flexDirection: "row", textAlign: "center", justifyContent: "center", paddingTop: 10 }}>
+            <Text style={styles.title}>Pufy</Text>
+          </View>
+        </ImageBackground>
+      </View >
     );
   }
 }

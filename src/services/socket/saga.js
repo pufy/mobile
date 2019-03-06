@@ -10,9 +10,7 @@ function* fetchConnect(placeId) {
       'forceNew': true
     })
   }
-  initState.instance.on((`queue:${placeId.placeId}`, (data => {
-    console.log(data);
-  })))
+
   yield put({ type: actions.CONNECT_CLIENT_ID_SUCCESS, socket: initState.instance });
 }
 
