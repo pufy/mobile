@@ -1,7 +1,7 @@
 import * as actions from "./constanst";
 import SocketIOClient from "socket.io-client";
 const initState = {
-  instance: SocketIOClient('http://172.27.28.24:3300/queue', {
+  instance: SocketIOClient('https://pufy.ga/queue', {
     query: "place=2",
     'forceNew': true
   })

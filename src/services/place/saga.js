@@ -3,7 +3,7 @@ import { put, takeLatest, all } from 'redux-saga/effects';
 import * as actions from "./constants";
 
 function* fetchPlaces() {
-  const data = yield fetch(`http://172.27.28.24:3300/v1/place?lat=1.624439&long=-75.604601&range=2000`)
+  const data = yield fetch(`https://pufy.ga/v1/place?lat=1.624439&long=-75.604601&range=2000`)
     .then(response => response.json())
     .catch(error => { return { state: 'ERROR', data: error } });
 
@@ -22,7 +22,7 @@ function* fetchPlacesRecommended() {
     mode: 'cors',
     cache: 'default'
   };
-  const data = yield fetch(`http://172.27.28.24:3300/v1/place/recommended?lat=1.624439&long=-75.60460`, miInit)
+  const data = yield fetch(`https://pufy.ga/v1/place/recommended?lat=1.624439&long=-75.60460`, miInit)
     .then(response => response.json())
     .catch(error => { return { state: 'ERROR', data: error } });
 
