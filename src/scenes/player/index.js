@@ -13,7 +13,6 @@ class Player extends Component {
       namePlace: "Galeria Cafe "
     }
     this.props.socket.instance.on('queue:2', (data => {
-      console.log(this.props);
       this.props.getQueueSuccess(data)
     }));
   }
