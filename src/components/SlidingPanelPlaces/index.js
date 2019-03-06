@@ -34,11 +34,9 @@ class SlidingPanelPlaces extends Component {
         allowMomentum={false}
         onDragStart={c => {
           this.props.draggableRange.start = c;
-          console.log(c, "inicio")
         }}
         onDragEnd={c => {
           positio = (this.props.draggableRange.start + height / 8 < c) ? height : (this.props.draggableRange.start > c + height / 8) ? 0 : height;
-          console.log(c, "fin", this.props.draggableRange.start);
           this._panel.transitionTo(positio)
         }}
         showBackdrop={false}

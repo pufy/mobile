@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, FlatList, TextInput} from 'react-native';
+import { View, Text, Image, FlatList, TextInput } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { getQueueSuccess } from "../../services/queue/action";
+import { connectClientId } from "../../services/socket/action";
 class Player extends Component {
 
   constructor(props) {
@@ -12,9 +13,16 @@ class Player extends Component {
       idPlace: 2,
       namePlace: "Galeria Cafe "
     }
-    this.props.socket.instance.on('queue:2', (data => {
-      this.props.getQueueSuccess(data)
-    }));
+    this.props.connectClientId(2);
+  }
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.socket !== prevProps.socket) {
+      this.props.socket.socket.on('queue:2', (data => {
+        this.props.getQueueSuccess(data)
+      }))
+      console.log(this.props.socket);
+    }
   }
 
   render() {
@@ -32,7 +40,7 @@ class Player extends Component {
           <Text style={{ fontSize: 20, fontWeight: '600', color: '#333333', marginBottom: 5, marginTop: 8 }}>Aquelarre </Text>
           <Text style={{ color: '#666', fontWeight: '100', marginBottom: 8, fontSize: 16 }}>Mago de oz </Text>
         </View>
-        {queue &&
+           {queue &&
           <FlatList
             data={queue}
             renderItem={({ item }) =>
@@ -45,7 +53,7 @@ class Player extends Component {
               </View>
             }
           />
-        }
+        } 
         <View style={{ alignItems: 'center' }}>
           <TextInput
             onPress={() => this.setState({ visible: true })}
@@ -67,7 +75,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  getQueueSuccess
+  getQueueSuccess,
+  connectClientId
 };
 
 Player = connect(mapStateToProps, mapDispatchToProps)(Player);

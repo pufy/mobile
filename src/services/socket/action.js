@@ -1,11 +1,10 @@
-import * as actions from "./constanst";
+import * as actions from "./constants";
 
-export const setClientId = (clientId, placeId) => ({
-  type: actions.SET_CLIENT_ID,
-  clientId: clientId,
+export const connectClientId = ( placeId) => ({
+  type: actions.CONNECT_CLIENT_ID,
   placeId: placeId
 });
-export const setInstance = (placeId) => ({
-  type: actions.SET_INTANCE,
-  placeId: placeId
-})
+export const connectClientIdSuccess = (socket) => ({
+  type: actions.CONNECT_CLIENT_ID_SUCCESS,
+  socket: socket
+});
